@@ -63,7 +63,7 @@ $(function() {
          * hiding/showing of the menu element.
          */
         it('body has menu-hidden class by default', function() {
-            expect($("body").hasClass('menu-hidden')).toBe(true);
+            expect($("body").hasClass('menu-hidden')).toBeTruthy();
         });
         /* TODO: Write a test that ensures the menu changes
          * visibility when the menu icon is clicked. This test
@@ -72,12 +72,12 @@ $(function() {
          */
         it('after click body shouldn\'t have menu-hidden', function() {
             $('.menu-icon-link').trigger('click');
-            expect($('body').hasClass('menu-hidden')).toBe(false);
+            expect($('body').hasClass('menu-hidden')).toBeFalsy();
         });
 
         it('after click body shouldn\'t have menu-hidden', function() {
             $('.menu-icon-link').trigger('click');
-            expect($('body').hasClass('menu-hidden')).toBe(true);
+            expect($('body').hasClass('menu-hidden')).toBeTruthy();
         });
 
     });
@@ -91,13 +91,10 @@ $(function() {
          * the use of Jasmine's beforeEach and asynchronous done() function.
          */
         beforeEach(function(done) {
-            loadFeed(0, function() {
-                done();
-            });
+            loadFeed(0, done);
         });
-        it('should be t least a single .entry element within the .feed container.', function(done) {
-            expect($(".feed").find('.entry').length).not.toBe(0);
-            done();
+        it('should be t least a single .entry element within the .feed container.', function() {
+            expect($(".feed .entry").length).not.toBe(0);
         });
 
     });
@@ -108,14 +105,19 @@ $(function() {
          * by the loadFeed function that the content actually changes.
          * Remember, loadFeed() is asynchronous.
          */
+        var firstLoad;
+        var secondLoad;
         beforeEach(function(done) {
             loadFeed(0, function() {
-                done();
+                secondLoad = document.getElementsByClassName("feed")[0].innerHTML;
+                loadFeed(1, function() {
+                    firstLoad = document.getElementsByClassName("feed")[0].innerHTML;
+                    done();
+                });
             });
         });
-        it('should be t least a single .entry element within the .feed container.', function(done) {
-            expect($("h2").text()).not.toBe('{{title}}');
-            done();
+        it('should be t least a single .entry element within the .feed container.', function() {
+            expect(firstLoad).not.toBe(secondLoad);
         });
     });
 });
